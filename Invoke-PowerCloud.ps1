@@ -48,7 +48,7 @@ function Invoke-PowerCloud() {
         Write-Verbose "[*] Creating POST request body for sending DNS zone file"
         $boundary = [System.Guid]::NewGuid().ToString(); 
         $LF = "`r`n";
-        
+
         $body = ( 
             "--$boundary",
             "Content-Disposition: form-data; name=`"file`"; filename=`"zone.txt`"",
@@ -58,7 +58,6 @@ function Invoke-PowerCloud() {
         ) -join $LF
 
         $request = @{"content" = $body; "boundary" = $boundary}
-
         return $request
     }
 
