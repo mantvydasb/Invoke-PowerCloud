@@ -39,9 +39,7 @@ function Invoke-PowerCloud() {
     }
 
     function Get-ZoneFileContent() {
-        # $file = 'C:\tools\powercloud\zone.txt';
-        $file = "zone.txt"
-        $bytes = [System.IO.File]::ReadAllBytes($file)
+        $bytes = [System.IO.File]::ReadAllBytes("zone.txt")
         $content = [System.Text.Encoding]::GetEncoding('UTF-8').GetString($bytes)
         return $content
     }
