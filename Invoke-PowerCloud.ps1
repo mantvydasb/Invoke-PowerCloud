@@ -14,7 +14,7 @@ function Invoke-PowerCloud() {
 )
 
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    $Global:API = ""
+    $Global:API = "<YOUR_API_KEY_HERE>"
     $Global:zoneId = ""
     $Global:API_URL = "https://api.cloudflare.com/client/v4"
     $Global:EMAIL = "mantvydo@gmail.com"
@@ -122,7 +122,7 @@ function Invoke-PowerCloud() {
         return $dnsRecords
     }
 
-    function Clear-DNSRecords($dnsRecords) {
+    function Remove-DNSRecords($dnsRecords) {
         if ($dnsRecords.result) {
             Write-Verbose "[*] Removing TXT records for $Domain"
             $dnsRecords.result | foreach-object {
@@ -173,7 +173,7 @@ function Invoke-PowerCloud() {
 
     # run these first to clean old TXT entries
     $dnsRecords = Get-DNSRecords
-    Clear-DNSRecords($dnsRecords) | out-null
+    Remove-DNSRecords($dnsRecords) | out-null
 
     $b64 = Get-B64EncodedFile
     $chunks = Get-Chunks $b64
