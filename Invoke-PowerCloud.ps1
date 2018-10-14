@@ -109,10 +109,10 @@ function Invoke-PowerCloud() {
         Write-Verbose "[*] Getting DNS TXT records for $Domain"
         $url = "/zones/$Global:zoneId/dns_records?type=TXT&per_page=100?page=$page"
         $dnsRecords += ConvertFrom-Json ((Invoke-GetRequest $url).Content)
-        $pageCount = $dnsRecords.result_info.total_count / 100
+        $pageCount = [math]::ceiling($dnsRecords.result_info.total_count / 100)
         
         if ($page -lt $pageCount) {
-            Get-DNSRecords $page $dnsRecords
+            Get-DNSRecords $page++ $dnsRecords
         }
 
         return $dnsRecords
