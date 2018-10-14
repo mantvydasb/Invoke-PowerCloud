@@ -116,7 +116,6 @@ function Invoke-PowerCloud() {
             $response = ConvertFrom-Json ((Invoke-GetRequest $url).Content)
             $pageCount = $response.result_info.total_pages
             $dnsRecords.result += $response.result
-            # $dnsRecords.result.add($response.result)
             $page++
         }
 
