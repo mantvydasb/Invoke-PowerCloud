@@ -1,3 +1,7 @@
+# Invoke-PowerCloud - powershell payload delivery via DNS
+# Author - Mantvydas Baranauskas (@kondencuotas) - https://how.ired.team/
+# Inspired and based on PowerDNS by Dominic Chell (@domchell) - https://github.com/mdsecactivebreach/PowerDNS
+
 function Invoke-PowerCloud() {
     [CmdletBinding()] Param (
 
