@@ -14,13 +14,13 @@ function Invoke-PowerCloud() {
 )
 
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    $Global:API = "<YOUR_API_KEY_HERE>"
+    $Global:API_KEY = "your-api-key"
     $Global:zoneId = ""
     $Global:API_URL = "https://api.cloudflare.com/client/v4"
-    $Global:EMAIL = "mantvydo@gmail.com"
+    $Global:EMAIL = "your-cloudlfare-account-email-address"
     $Global:HEADERS = @{
-        "X-Auth-Key" = $API
-        "X-Auth-Email" = $EMAIL
+        "X-Auth-Key" = $Global:API_KEY
+        "X-Auth-Email" = $Global:EMAIL
         "Content-Type" = "application/json"
     }
 
@@ -48,7 +48,7 @@ function Invoke-PowerCloud() {
         Write-Verbose "[*] Creating POST request body for sending DNS zone file"
         $boundary = [System.Guid]::NewGuid().ToString(); 
         $LF = "`r`n";
-
+        
         $body = ( 
             "--$boundary",
             "Content-Disposition: form-data; name=`"file`"; filename=`"zone.txt`"",
@@ -58,6 +58,7 @@ function Invoke-PowerCloud() {
         ) -join $LF
 
         $request = @{"content" = $body; "boundary" = $boundary}
+
         return $request
     }
 
@@ -85,7 +86,7 @@ function Invoke-PowerCloud() {
     }
 
     function New-TXTRecord($name, $value) { 
-        return "$name IN TXT $value`n"
+        return "$name 120 IN TXT $value`n"
     }
 
     function New-ZoneFile($chunks) {
@@ -166,8 +167,6 @@ function Invoke-PowerCloud() {
     $zones = Get-DNSZones
     $Global:zoneId = Get-ZoneId $zones
     $nameServer = Get-NameServer $zones
-
-    # run these first to clean old TXT entries
     $dnsRecords = Get-DNSRecords
     Remove-DNSRecords($dnsRecords) | out-null
 
